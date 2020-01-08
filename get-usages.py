@@ -1,15 +1,9 @@
+#!/usr/local/bin/python3
+
 import boto3
 import sys
+import csv
 
-vcpus = {
-    "nano": 2,
-    "micro": 2,
-    "small": 2,
-    "medium": 2,
-    "large": 2,
-    "xlarge": 4,
-    "2xlarge": 8
-}
 
 if len(sys.argv) < 2 :
     print()
@@ -41,7 +35,12 @@ for region in regions:
             metadata[instance.instance_type] += 1
         else:
             metadata[instance.instance_type] = 1
-        total_vcpu += vcpus[instance.instance_type.split(".")[1]]
+
+        with open('instancetypes.csv') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row['Instance type'] == instance.instance_type:
+                    total_vcpu += int(row['vCPUs'])
         print(instance.id, instance.instance_type)
 
     print()
@@ -55,3 +54,4 @@ for region in regions:
     print()
     print("=" * 40)
     total=0
+

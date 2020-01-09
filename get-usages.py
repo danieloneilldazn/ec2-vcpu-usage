@@ -30,6 +30,8 @@ for region in regions:
     total=0
     total_vcpu=0
     for instance in instances:
+        if instance.state['Name'] not in ["running", "pending"]:
+            continue
         total+=1
         if instance.instance_type in metadata.keys():
             metadata[instance.instance_type] += 1
